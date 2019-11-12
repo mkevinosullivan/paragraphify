@@ -1,6 +1,8 @@
 # WARNING: changing content of this file will BREAK test scripts; do so
 # at your own peril.
 #
+# Master test string = Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus nulla at volutpat diam ut venenatis. Sollicitudin nibh sit amet commodo nulla facilisi nullam vehicula ipsum. Bibendum ut tristique et egestas quis ipsum. Nisi scelerisque eu ultrices vitae auctor eu augue ut lectus. Et malesuada fames ac turpis egestas integer eget aliquet nibh. Auctor augue mauris augue neque gravida in fermentum et sollicitudin. Pharetra magna ac placerat vestibulum lectus mauris ultrices. Id diam vel quam elementum pulvinar etiam non quam. Nulla posuere sollicitudin aliquam ultrices. Enim eu turpis egestas pretium aenean. Faucibus nisl tincidunt eget nullam. Neque aliquam vestibulum morbi blandit cursus risus at ultrices. Quam quisque id diam vel quam elementum pulvinar etiam. Egestas congue quisque egestas diam. Nec nam aliquam sem et tortor.
+#
 len79:
   input: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
   expected:
