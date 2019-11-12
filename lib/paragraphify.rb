@@ -13,17 +13,21 @@ module Paragraphify
     end
 
     def paragraphify(string:)
-      return_str = " " * leading_indent
+      return_str = " " * @leading_indent
       input_str = string
-      current_breakpoint = @linebreak - leading_indent
+      current_breakpoint = @linebreak - @leading_indent
 
-      # byebug
+      # DEBUG byebug if "test_paragraphify_len50_lb80_li4_hi0" == caller_locations.first.label
       while input_str.size > current_breakpoint
-        return_str += input_str[0..(current_breakpoint-1)]
-        return_str += "\n"
-        input_str = input_str[current_breakpoint..-1]
+        # need to find a whitespace character before the breakpoint
+        current_breakpoint = input_str[0..(current_breakpoint-1)].rindex(/\s/)
+        return_str += input_str[0..(current_breakpoint-1)].strip + "\n" + " " * @hanging_indent
+        input_str = input_str[current_breakpoint..-1].lstrip
+
+        # reset breakpoint for while() test
+        current_breakpoint = @linebreak - @hanging_indent
       end
-      return_str += input_str[0..-1]
+      return_str += input_str[0..-1].lstrip
 
       return_str
     end
