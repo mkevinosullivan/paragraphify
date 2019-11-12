@@ -1,37 +1,46 @@
 require "test_helper"
+require 'yaml'
 require 'byebug'
 
 class ParagraphifyTest < Minitest::Test
-  def generate_string(len:)
-    return_string = ""
-    num_of_tens = len / 10
-    num_of_tens += 1 unless len % 10 == 0
+  def store_test_data(test:)
+    result_hash = {}
 
-    num_of_tens.times do |i|
-      return_string += "." * (10 - (i+1).to_s.size)
-      return_string += (i+1).to_s
-    end
+    # DEBUG puts "######### TEST = "
+    # DEBUG p test
 
-    return_string = return_string[0..(len-1)]
+    result_hash[:input] = test["input"]
+    result_hash[:lb80_li0_hi0] = test["expected"]["lb80_li0_hi0"].reduce("") { |res, v| res == "" ? res = v[1] : res += "\n" + v[1] }
+    result_hash[:lb80_li4_hi0] = test["expected"]["lb80_li4_hi0"].reduce("") { |res, v| res == "" ? res = v[1] : res += "\n" + v[1] }
+    result_hash[:lb80_li0_hi8] = test["expected"]["lb80_li0_hi8"].reduce("") { |res, v| res == "" ? res = v[1] : res += "\n" + v[1] }
+    result_hash[:lb80_li4_hi8] = test["expected"]["lb80_li4_hi8"].reduce("") { |res, v| res == "" ? res = v[1] : res += "\n" + v[1] }
+
+    result_hash
   end
 
   def setup
-    @string_40 ||= generate_string(len: 40)
-    @string_79 ||= generate_string(len: 79)
-    @string_81 ||= generate_string(len: 81)
-    @string_100 ||= generate_string(len: 100)
-    @string_159 ||= generate_string(len: 159)
-    @string_160 ||= generate_string(len: 160)
-    @string_161 ||= generate_string(len: 161)
-    @string_235 ||= generate_string(len: 235)
-    @string_310 ||= generate_string(len: 310)
+    # DEBUG puts "I am here: ", File.basename(Dir.getwd)
+    @contents ||= File.read("test/test_strings.yml")
+    @test_data ||= YAML.load(@contents)
+
+    @len50 = store_test_data(test: @test_data["len50"])
+    @len79 = store_test_data(test: @test_data["len79"])
+    @len80_ends_with_space = store_test_data(test: @test_data["len80_ends_with_space"])
+    @len100 = store_test_data(test: @test_data["len100"])
+    @len159 = store_test_data(test: @test_data["len159"])
+    @len159_ends_with_space = store_test_data(test: @test_data["len159_ends_with_space"])
+    @len159_strategic_spacing = store_test_data(test: @test_data["len159_strategic_spacing"])
+    @len235 = store_test_data(test: @test_data["len235"])
+    @len320 = store_test_data(test: @test_data["len320"])
   end
 
   def test_that_it_has_a_version_number
     refute_nil ::Paragraphify::VERSION
   end
 
+  #
   # test new() with defaults
+  #
   def test_linebreak_default_is_80
     p = Paragraphify::Paragraph.new
 
@@ -50,7 +59,9 @@ class ParagraphifyTest < Minitest::Test
     assert_equal(0, p.hanging_indent)
   end
 
+  #
   # test setters
+  #
   def test_linebreak_setter
     p = Paragraphify::Paragraph.new
 
@@ -69,7 +80,9 @@ class ParagraphifyTest < Minitest::Test
     assert_equal(5, p.hanging_indent = 5)
   end
 
-  # test new() with args
+  #
+  # test new() with args - various combos of one arg, two args, three args
+  #
   def test_new_with_linebreak_arg
     p = Paragraphify::Paragraph.new(linebreak: 60)
 
@@ -112,6 +125,9 @@ class ParagraphifyTest < Minitest::Test
     assert(p.linebreak == 72 && p.leading_indent == 10 && p.hanging_indent == 5)
   end
 
+  #
+  # test paragraphify()
+  #
   def test_paragraphify_returns_a_String
     p = Paragraphify::Paragraph.new
 
@@ -126,121 +142,331 @@ class ParagraphifyTest < Minitest::Test
     assert_equal(expected_string, p.paragraphify(string: input_string))
   end
 
-  def test_paragraphify_100_split_at_80
+  #
+  # test paragraphify() with defaults - linebreak = 80, leading_indent = 0, hanging_indent = 0
+  #
+  def test_paragraphify_len50_lb80_li0_hi0
     p = Paragraphify::Paragraph.new()
 
-    #puts "\n", @string_100, "\n"
+    # DEBUG puts "\n", @len50[:input], "\n"
+    # DEBUG puts "\n", @len50[:lb80_li0_hi0], "\n"
 
-    expected_string = @string_100[0..79] + "\n" + @string_100[80..-1]
-    #puts "\n", expected_string, "\n"
-
-    assert_equal(expected_string, p.paragraphify(string: @string_100))
+    assert_equal(@len50[:lb80_li0_hi0], p.paragraphify(string: @len50[:input]))
   end
 
-  def test_paragraphify_79_split_at_80
+  def test_paragraphify_len79_lb80_li0_hi0
     p = Paragraphify::Paragraph.new()
 
-    #puts "\n", @string_79, "\n"
+    # DEBUG puts "\n", @len79[:input], "\n"
+    # DEBUG puts "\n", @len79[:lb80_li0_hi0], "\n"
 
-    expected_string = @string_79
-    #puts "\n", expected_string, "\n"
-
-    assert_equal(expected_string, p.paragraphify(string: @string_79))
+    assert_equal(@len79[:lb80_li0_hi0], p.paragraphify(string: @len79[:input]))
   end
 
-  def test_paragraphify_40_split_at_80
+  def test_paragraphify_len80_ends_with_space_lb80_li0_hi0
     p = Paragraphify::Paragraph.new()
 
-    #puts "\n", @string_40, "\n"
+    # DEBUG puts "\n", @len80_ends_with_space[:input], "\n"
+    # DEBUG puts "\n", @len80_ends_with_space[:lb80_li0_hi0], "\n"
 
-    expected_string = @string_40
-    #puts "\n", expected_string, "\n"
-
-    assert_equal(expected_string, p.paragraphify(string: @string_40))
+    assert_equal(@len80_ends_with_space[:lb80_li0_hi0], p.paragraphify(string: @len80_ends_with_space[:input]))
   end
 
-  def test_paragraphify_81_split_at_80
+  def test_paragraphify_len100_lb80_li0_hi0
     p = Paragraphify::Paragraph.new()
 
-    #puts "\n", @string_81, "\n"
+    # DEBUG puts "\n", @len100[:input], "\n"
+    # DEBUG puts "\n", @len100[:lb80_li0_hi0], "\n"
 
-    expected_string = @string_81[0..79] + "\n" + @string_81[80..-1]
-    #puts "\n", expected_string, "\n"
-
-    assert_equal(expected_string, p.paragraphify(string: @string_81))
+    assert_equal(@len100[:lb80_li0_hi0], p.paragraphify(string: @len100[:input]))
   end
 
-  def test_paragraphify_159_split_at_80
+  def test_paragraphify_len159_lb80_li0_hi0
     p = Paragraphify::Paragraph.new()
 
-    #puts "\n", @string_159, "\n"
+    # DEBUG puts "\n", @len159[:input], "\n"
+    # DEBUG puts "\n", @len159[:lb80_li0_hi0], "\n"
 
-    expected_string = @string_159[0..79] + "\n" + @string_159[80..-1]
-    #puts "\n", expected_string, "\n"
-
-    assert_equal(expected_string, p.paragraphify(string: @string_159))
+    assert_equal(@len159[:lb80_li0_hi0], p.paragraphify(string: @len159[:input]))
   end
 
-  def test_paragraphify_160_split_at_80
+  def test_paragraphify_len159_ends_with_space_lb80_li0_hi0
     p = Paragraphify::Paragraph.new()
 
-    #puts "\n", @string_160, "\n"
+    # DEBUG puts "\n", @len159_ends_with_space[:input], "\n"
+    # DEBUG puts "\n", @len159_ends_with_space[:lb80_li0_hi0], "\n"
 
-    expected_string = @string_160[0..79] + "\n" + @string_160[80..-1]
-    #puts "\n", expected_string, "\n"
-
-    assert_equal(expected_string, p.paragraphify(string: @string_160))
+    assert_equal(@len159_ends_with_space[:lb80_li0_hi0], p.paragraphify(string: @len159_ends_with_space[:input]))
   end
 
-  def test_paragraphify_161_split_at_80
+  def test_paragraphify_len159_ends_with_space_lb80_li0_hi0
     p = Paragraphify::Paragraph.new()
 
-    #puts "\n", @string_161, "\n"
+    # DEBUG puts "\n", @len159_ends_with_space[:input], "\n"
+    # DEBUG puts "\n", @len159_ends_with_space[:lb80_li0_hi0], "\n"
 
-    expected_string = @string_161[0..79] + "\n" + @string_161[80..159] + "\n" + @string_161[160..-1]
-    #puts "\n", expected_string, "\n"
-
-    assert_equal(expected_string, p.paragraphify(string: @string_161))
+    assert_equal(@len159_ends_with_space[:lb80_li0_hi0], p.paragraphify(string: @len159_ends_with_space[:input]))
   end
 
-  def test_paragraphify_235_split_at_80
+  def test_paragraphify_len235_lb80_li0_hi0
     p = Paragraphify::Paragraph.new()
 
-    #puts "\n", @string_235, "\n"
+    # DEBUG puts "\n", @len235[:input], "\n"
+    # DEBUG puts "\n", @len235[:lb80_li0_hi0], "\n"
 
-    expected_string = @string_235[0..79] + "\n" + @string_235[80..159] + "\n" + @string_235[160..-1]
-    #puts "\n", expected_string, "\n"
-
-    assert_equal(expected_string, p.paragraphify(string: @string_235))
+    assert_equal(@len235[:lb80_li0_hi0], p.paragraphify(string: @len235[:input]))
   end
 
-  def test_paragraphify_310_split_at_80
+  def test_paragraphify_len320_lb80_li0_hi0
     p = Paragraphify::Paragraph.new()
 
-    #puts "\n", @string_310, "\n"
+    # DEBUG puts "\n", @len320[:input], "\n"
+    # DEBUG puts "\n", @len320[:lb80_li0_hi0], "\n"
 
-    expected_string = @string_310[0..79] + "\n" + @string_310[80..159] + "\n"
-    expected_string += @string_310[160..239] + "\n" + @string_310[240..-1]
-    #puts "\n", expected_string, "\n"
-
-    assert_equal(expected_string, p.paragraphify(string: @string_310))
+    assert_equal(@len320[:lb80_li0_hi0], p.paragraphify(string: @len320[:input]))
   end
+
+  #
+  # test paragraphify() with linebreak = 80, leading_indent = 4, hanging_indent = 0
+  #
+  def test_paragraphify_len50_lb80_li4_hi0
+    p = Paragraphify::Paragraph.new(leading_indent: 4)
+
+    # DEBUG puts "\n", @len50[:input], "\n"
+    # DEBUG puts "\n", @len50[:lb80_li4_hi0], "\n"
+
+    assert_equal(@len50[:lb80_li4_hi0], p.paragraphify(string: @len50[:input]))
+  end
+
+  def test_paragraphify_len79_lb80_li4_hi0
+    p = Paragraphify::Paragraph.new(leading_indent: 4)
+
+    # DEBUG puts "\n", @len79[:input], "\n"
+    # DEBUG puts "\n", @len79[:lb80_li4_hi0], "\n"
+
+    assert_equal(@len79[:lb80_li4_hi0], p.paragraphify(string: @len79[:input]))
+  end
+
+  def test_paragraphify_len80_ends_with_space_lb80_li4_hi0
+    p = Paragraphify::Paragraph.new(leading_indent: 4)
+
+    # DEBUG puts "\n", @len80_ends_with_space[:input], "\n"
+    # DEBUG puts "\n", @len80_ends_with_space[:lb80_li4_hi0], "\n"
+
+    assert_equal(@len80_ends_with_space[:lb80_li4_hi0], p.paragraphify(string: @len80_ends_with_space[:input]))
+  end
+
+  def test_paragraphify_len100_lb80_li4_hi0
+    p = Paragraphify::Paragraph.new(leading_indent: 4)
+
+    # DEBUG puts "\n", @len100[:input], "\n"
+    # DEBUG puts "\n", @len100[:lb80_li4_hi0], "\n"
+
+    assert_equal(@len100[:lb80_li4_hi0], p.paragraphify(string: @len100[:input]))
+  end
+
+  def test_paragraphify_len159_lb80_li4_hi0
+    p = Paragraphify::Paragraph.new(leading_indent: 4)
+
+    # DEBUG puts "\n", @len159[:input], "\n"
+    # DEBUG puts "\n", @len159[:lb80_li4_hi0], "\n"
+
+    assert_equal(@len159[:lb80_li4_hi0], p.paragraphify(string: @len159[:input]))
+  end
+
+  def test_paragraphify_len159_strategic_spacing_lb80_li4_hi0
+    p = Paragraphify::Paragraph.new(leading_indent: 4)
+
+    # DEBUG puts "\n", @len159_strategic_spacing[:input], "\n"
+    # DEBUG puts "\n", @len159_strategic_spacing[:lb80_li4_hi0], "\n"
+
+    assert_equal(@len159_strategic_spacing[:lb80_li4_hi0], p.paragraphify(string: @len159_strategic_spacing[:input]))
+  end
+
+  def test_paragraphify_len235_lb80_li4_hi0
+    p = Paragraphify::Paragraph.new(leading_indent: 4)
+
+    # DEBUG puts "\n", @len235[:input], "\n"
+    # DEBUG puts "\n", @len235[:lb80_li4_hi0], "\n"
+
+    assert_equal(@len235[:lb80_li4_hi0], p.paragraphify(string: @len235[:input]))
+  end
+
+  def test_paragraphify_len320_lb80_li4_hi0
+    p = Paragraphify::Paragraph.new(leading_indent: 4)
+
+    # DEBUG puts "\n", @len320[:input], "\n"
+    # DEBUG puts "\n", @len320[:lb80_li4_hi0], "\n"
+
+    assert_equal(@len320[:lb80_li4_hi0], p.paragraphify(string: @len320[:input]))
+  end
+
+  # #
+  # # test paragraphify() with linebreak = 80, leading_indent = 0, hanging_indent = 8
+  # #
+  def test_paragraphify_len50_lb80_li0_hi8
+    p = Paragraphify::Paragraph.new(hanging_indent: 8)
+
+    # DEBUG puts "\n", @len50[:input], "\n"
+    # DEBUG puts "\n", @len50[:lb80_li0_hi8], "\n"
+
+    assert_equal(@len50[:lb80_li0_hi8], p.paragraphify(string: @len50[:input]))
+  end
+
+  def test_paragraphify_len79_lb80_li0_hi8
+    p = Paragraphify::Paragraph.new(hanging_indent: 8)
+
+    # DEBUG puts "\n", @len79[:input], "\n"
+    # DEBUG puts "\n", @len79[:lb80_li0_hi8], "\n"
+
+    assert_equal(@len79[:lb80_li0_hi8], p.paragraphify(string: @len79[:input]))
+  end
+
+  def test_paragraphify_len80_ends_with_space_lb80_li0_hi8
+    p = Paragraphify::Paragraph.new(hanging_indent: 8)
+
+    # DEBUG puts "\n", @len80_ends_with_space[:input], "\n"
+    # DEBUG puts "\n", @len80_ends_with_space[:lb80_li0_hi8], "\n"
+
+    assert_equal(@len80_ends_with_space[:lb80_li0_hi8], p.paragraphify(string: @len80_ends_with_space[:input]))
+  end
+
+  def test_paragraphify_len100_lb80_li0_hi8
+    p = Paragraphify::Paragraph.new(hanging_indent: 8)
+
+    # DEBUG puts "\n", @len100[:input], "\n"
+    # DEBUG puts "\n", @len100[:lb80_li0_hi8], "\n"
+
+    assert_equal(@len100[:lb80_li0_hi8], p.paragraphify(string: @len100[:input]))
+  end
+
+  def test_paragraphify_len159_lb80_li0_hi8
+    p = Paragraphify::Paragraph.new(hanging_indent: 8)
+
+    # DEBUG puts "\n", @len159[:input], "\n"
+    # DEBUG puts "\n", @len159[:lb80_li0_hi8], "\n"
+
+    assert_equal(@len159[:lb80_li0_hi8], p.paragraphify(string: @len159[:input]))
+  end
+
+  def test_paragraphify_len159_ends_with_space_lb80_li0_hi8
+    p = Paragraphify::Paragraph.new(hanging_indent: 8)
+
+    # DEBUG puts "\n", @len159_ends_with_space[:input], "\n"
+    # DEBUG puts "\n", @len159_ends_with_space[:lb80_li0_hi8], "\n"
+
+    assert_equal(@len159_ends_with_space[:lb80_li0_hi8], p.paragraphify(string: @len159_ends_with_space[:input]))
+  end
+
+  def test_paragraphify_len159_strategic_spacing_lb80_li0_hi8
+    p = Paragraphify::Paragraph.new(hanging_indent: 8)
+
+    # DEBUG puts "\n", @len159_strategic_spacing[:input], "\n"
+    # DEBUG puts "\n", @len159_strategic_spacing[:lb80_li0_hi8], "\n"
+
+    assert_equal(@len159_strategic_spacing[:lb80_li0_hi8], p.paragraphify(string: @len159_strategic_spacing[:input]))
+  end
+
+  def test_paragraphify_len235_lb80_li0_hi8
+    p = Paragraphify::Paragraph.new(hanging_indent: 8)
+
+    # DEBUG puts "\n", @len235[:input], "\n"
+    # DEBUG puts "\n", @len235[:lb80_li0_hi8], "\n"
+
+    assert_equal(@len235[:lb80_li0_hi8], p.paragraphify(string: @len235[:input]))
+  end
+
+  def test_paragraphify_len320_lb80_li0_hi8
+    p = Paragraphify::Paragraph.new(hanging_indent: 8)
+
+    # DEBUG puts "\n", @len320[:input], "\n"
+    # DEBUG puts "\n", @len320[:lb80_li0_hi8], "\n"
+
+    assert_equal(@len320[:lb80_li0_hi8], p.paragraphify(string: @len320[:input]))
+  end
+
+  # #
+  # # test paragraphify() with linebreak = 80, leading_indent = 4, hanging_indent = 8
+  # #
+  def test_paragraphify_len50_lb80_li4_hi8
+    p = Paragraphify::Paragraph.new(leading_indent: 4, hanging_indent: 8)
+
+    # DEBUG puts "\n", @len50[:input], "\n"
+    # DEBUG puts "\n", @len50[:lb80_li4_hi8], "\n"
+
+    assert_equal(@len50[:lb80_li4_hi8], p.paragraphify(string: @len50[:input]))
+  end
+
+  def test_paragraphify_len79_lb80_li4_hi8
+    p = Paragraphify::Paragraph.new(leading_indent: 4, hanging_indent: 8)
+
+    # DEBUG puts "\n", @len79[:input], "\n"
+    # DEBUG puts "\n", @len79[:lb80_li4_hi8], "\n"
+
+    assert_equal(@len79[:lb80_li4_hi8], p.paragraphify(string: @len79[:input]))
+  end
+
+  def test_paragraphify_len80_ends_with_space_lb80_li4_hi8
+    p = Paragraphify::Paragraph.new(leading_indent: 4, hanging_indent: 8)
+
+    # DEBUG puts "\n", @len80_ends_with_space[:input], "\n"
+    # DEBUG puts "\n", @len80_ends_with_space[:lb80_li4_hi8], "\n"
+
+    assert_equal(@len80_ends_with_space[:lb80_li4_hi8], p.paragraphify(string: @len80_ends_with_space[:input]))
+  end
+
+  def test_paragraphify_len100_lb80_li4_hi8
+    p = Paragraphify::Paragraph.new(leading_indent: 4, hanging_indent: 8)
+
+    # DEBUG puts "\n", @len100[:input], "\n"
+    # DEBUG puts "\n", @len100[:lb80_li4_hi8], "\n"
+
+    assert_equal(@len100[:lb80_li4_hi8], p.paragraphify(string: @len100[:input]))
+  end
+
+  def test_paragraphify_len159_lb80_li4_hi8
+    p = Paragraphify::Paragraph.new(leading_indent: 4, hanging_indent: 8)
+
+    # DEBUG puts "\n", @len159[:input], "\n"
+    # DEBUG puts "\n", @len159[:lb80_li4_hi8], "\n"
+
+    assert_equal(@len159[:lb80_li4_hi8], p.paragraphify(string: @len159[:input]))
+  end
+
+  def test_paragraphify_len159_ends_with_space_lb80_li4_hi8
+    p = Paragraphify::Paragraph.new(leading_indent: 4, hanging_indent: 8)
+
+    # DEBUG puts "\n", @len159_ends_with_space[:input], "\n"
+    # DEBUG puts "\n", @len159_ends_with_space[:lb80_li4_hi8], "\n"
+
+    assert_equal(@len159_ends_with_space[:lb80_li4_hi8], p.paragraphify(string: @len159_ends_with_space[:input]))
+  end
+
+  def test_paragraphify_len159_strategic_spacing_lb80_li4_hi8
+    p = Paragraphify::Paragraph.new(leading_indent: 4, hanging_indent: 8)
+
+    # DEBUG puts "\n", @len159_strategic_spacing[:input], "\n"
+    # DEBUG puts "\n", @len159_strategic_spacing[:lb80_li4_hi8], "\n"
+
+    assert_equal(@len159_strategic_spacing[:lb80_li4_hi8], p.paragraphify(string: @len159_strategic_spacing[:input]))
+  end
+
+  def test_paragraphify_len235_lb80_li4_hi8
+    p = Paragraphify::Paragraph.new(leading_indent: 4, hanging_indent: 8)
+
+    # DEBUG puts "\n", @len235[:input], "\n"
+    # DEBUG puts "\n", @len235[:lb80_li4_hi8], "\n"
+
+    assert_equal(@len235[:lb80_li4_hi8], p.paragraphify(string: @len235[:input]))
+  end
+
+  def test_paragraphify_len320_lb80_li4_hi8
+    p = Paragraphify::Paragraph.new(leading_indent: 4, hanging_indent: 8)
+
+    # DEBUG puts "\n", @len320[:input], "\n"
+    # DEBUG puts "\n", @len320[:lb80_li4_hi8], "\n"
+
+    assert_equal(@len320[:lb80_li4_hi8], p.paragraphify(string: @len320[:input]))
+  end
+
 end
-
-
-# class Test
-#   Expected_string =
-#     "[CONDO] \"80 King St, Ottawa, ON\", $599000.00, 4 bed, 3 bath, 1950 sq.ft., floor 15, 4 elevators, has a security guard, monthly fee $950.00, parking not included, monthly parking $300.00\n" \
-#     "[TOWNHOUSE] \"620 Wellington St, Halifax, NS\", $499000.00, 3 bed, 2 bath, 1560 sq.ft., entrance at level 3, does not have an elevator, has parking\n" \
-#     "[HOUSE] \"420 Elgin St, London, ON\", $899000.00, 4 bed, 2 bath, 2650 sq.ft., 3 levels, does not have a finished basement, has a garage\n"
-
-#   Output_string =
-#   "[CONDO] \"80 King St, Ottawa, ON\", $599000.00, 4 bed, 3 bath, 1950 sq.ft.,\n    " \
-#   "floor 15, 4 elevators, has a security guard, monthly fee $950.00, parking\n    " \
-#   "not included, monthly parking $300.00\n" \
-#   "[TOWNHOUSE] \"620 Wellington St, Halifax, NS\", $499000.00, 3 bed, 2\n    " \
-#   "bath, 1560 sq.ft., entrance at level 3, does not have an elevator, has\n    " \
-#   "parking\n" \
-#   "[HOUSE] \"420 Elgin St, London, ON\", $899000.00, 4 bed, 2 bath, 2650\n    " \
-#   "sq.ft., 3 levels, does not have a finished basement, has a garage\n"
-# end
