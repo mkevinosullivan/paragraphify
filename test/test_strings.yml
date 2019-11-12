@@ -1,0 +1,180 @@
+# WARNING: changing content of this file will BREAK test scripts; do so
+# at your own peril.
+#
+len79:
+  input: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+  expected:
+    lb80_li0_hi0:  # defaults
+      fragment-1: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+    lb80_li0_hi8:
+      fragment-1: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+    lb80_li4_hi0:
+      fragment-1: "    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"
+      fragment-2: "tempor"
+    lb80_li4_hi8:
+      fragment-1: "    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"
+      fragment-2: "        tempor"
+
+len50:
+  input: "Lorem ipsum dolor sit amet, consectetur adipiscing"
+  expected:
+    lb80_li0_hi0:  # defaults
+      fragment-1: "Lorem ipsum dolor sit amet, consectetur adipiscing"
+    lb80_li0_hi8:
+      fragment-1: "Lorem ipsum dolor sit amet, consectetur adipiscing"
+    lb80_li4_hi0:
+      fragment-1: "    Lorem ipsum dolor sit amet, consectetur adipiscing"
+    lb80_li4_hi8:
+      fragment-1: "    Lorem ipsum dolor sit amet, consectetur adipiscing"
+
+len80_ends_with_space:
+  input: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor "
+  expected:
+    lb80_li0_hi0:  # defaults
+      fragment-1: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor "
+    lb80_li0_hi8:
+      fragment-1: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor "
+    lb80_li4_hi0:
+      fragment-1: "    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"
+      fragment-2: "tempor "
+    lb80_li4_hi8:
+      fragment-1: "    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"
+      fragment-2: "        tempor "
+
+len100:
+  input: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore"
+  expected:
+    lb80_li0_hi0:  # defaults
+      fragment-1: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+      fratment-2: "incididunt ut labore"
+    lb80_li0_hi8:
+      fragment-1: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+      fragment-2: "        incididunt ut labore"
+    lb80_li4_hi0:
+      fragment-1: "    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"
+      fragment-2: "tempor incididunt ut labore"
+    lb80_li4_hi8:
+      fragment-1: "    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"
+      fragment-2: "        tempor incididunt ut labore"
+
+len159_ends_with_space:
+  input: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus nulla at "
+  expected:
+    lb80_li0_hi0:  # defaults
+      fragment-1: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+      fratment-2: "incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus nulla at "
+    lb80_li0_hi8:
+      fragment-1: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+      fratment-2: "        incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus"
+      fragment-3: "        nulla at "
+    lb80_li4_hi0:
+      fragment-1: "    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"
+      fratment-2: "tempor incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus"
+      fragment-3: "nulla at "
+    lb80_li4_hi8:
+      fragment-1: "    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"
+      fragment-2: "        tempor incididunt ut labore et dolore magna aliqua. Vitae semper quis"
+      fratment-3: "        lectus nulla at "
+
+len159:
+  input: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus nulla diam"
+  expected:
+    lb80_li0_hi0:  # defaults
+      fragment-1: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+      fragment-2: "incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus nulla diam"
+    lb80_li0_hi8:
+      fragment-1: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+      fragment-2: "        incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus"
+      fragment-3: "        nulla diam"
+    lb80_li4_hi0:
+      fragment-1: "    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"
+      fragment-2: "tempor incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus"
+      fragment-3: "nulla diam"
+    lb80_li4_hi8:
+      fragment-1: "    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"
+      fragment-2: "        tempor incididunt ut labore et dolore magna aliqua. Vitae semper quis"
+      fragment-3: "        lectus nulla diam"
+
+len159_strategic_spacing:
+  input: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor  incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus nulla diam"
+  expected:
+    lb80_li0_hi0:  # defaults
+      fragment-1: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+      fragment-2: "incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus nulla diam"
+    lb80_li0_hi8:
+      fragment-1: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+      fragment-2: "        incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus"
+      fragment-3: "        nulla diam"
+    lb80_li4_hi0:
+      fragment-1: "    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"
+      fragment-2: "tempor  incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus"
+      fragment-3: "nulla diam"
+    lb80_li4_hi8:
+      fragment-1: "    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"
+      fragment-2: "        tempor  incididunt ut labore et dolore magna aliqua. Vitae semper quis"
+      fragment-3: "        lectus nulla diam"
+
+len235:
+  input: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus nulla at volutpat diam ut venenatis. Sollicitudin nibh sit amet commodo nulla facilisi"
+  expected:
+    lb80_li0_hi0:  # defaults
+      fragment-1: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+      fragment-2: "incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus nulla at"
+      fragment-3: "volutpat diam ut venenatis. Sollicitudin nibh sit amet commodo nulla facilisi"
+    lb80_li0_hi8:
+      fragment-1: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+      fragment-2: "        incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus"
+      fragment-3: "        nulla at volutpat diam ut venenatis. Sollicitudin nibh sit amet commodo"
+      fragment-4: "        nulla facilisi"
+    lb80_li4_hi0:
+      fragment-1: "    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"
+      fragment-2: "tempor incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus"
+      fragment-3: "nulla at volutpat diam ut venenatis. Sollicitudin nibh sit amet commodo nulla"
+      fragment-4: "facilisi"
+    lb80_li4_hi8:
+      fragment-1: "    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"
+      fragment-2: "        tempor incididunt ut labore et dolore magna aliqua. Vitae semper quis"
+      fragment-3: "        lectus nulla at volutpat diam ut venenatis. Sollicitudin nibh sit amet"
+      fragment-4: "        commodo nulla facilisi"
+
+len320:
+  input: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus nulla at volutpat diam ut venenatis. Sollicitudin nibh sit amet commodo nulla facilisi nullam vehicula ipsum. Bibendum ut tristique et egestas quis ipsum. Nisi scelerisque"
+  expected:
+    lb80_li0_hi0:  # defaults
+      fragment-1: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+      fragment-2: "incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus nulla at"
+      fragment-3: "volutpat diam ut venenatis. Sollicitudin nibh sit amet commodo nulla facilisi"
+      fragment-4: "nullam vehicula ipsum. Bibendum ut tristique et egestas quis ipsum. Nisi"
+      fragment-5: "scelerisque"
+    lb80_li0_hi8:
+      fragment-1: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+      fragment-2: "        incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus"
+      fragment-3: "        nulla at volutpat diam ut venenatis. Sollicitudin nibh sit amet commodo"
+      fragment-4: "        nulla facilisi nullam vehicula ipsum. Bibendum ut tristique et egestas"
+      fragment-5: "        quis ipsum. Nisi scelerisque"
+    lb80_li4_hi0:
+      fragment-1: "    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"
+      fragment-2: "tempor incididunt ut labore et dolore magna aliqua. Vitae semper quis lectus"
+      fragment-3: "nulla at volutpat diam ut venenatis. Sollicitudin nibh sit amet commodo nulla"
+      fragment-4: "facilisi nullam vehicula ipsum. Bibendum ut tristique et egestas quis ipsum."
+      fragment-5: "Nisi scelerisque"
+    lb80_li4_hi8:
+      fragment-1: "    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"
+      fragment-2: "        tempor incididunt ut labore et dolore magna aliqua. Vitae semper quis"
+      fragment-3: "        lectus nulla at volutpat diam ut venenatis. Sollicitudin nibh sit amet"
+      fragment-4: "        commodo nulla facilisi nullam vehicula ipsum. Bibendum ut tristique et"
+      fragment-5: "        egestas quis ipsum. Nisi scelerisque"
+
+# <testname>:
+#   input: ""
+#   expected:
+#     lb80_li0_hi0:  # defaults
+#       fragment-1: ""
+#     lb80_li0_hi8:
+#       fragment-1: ""
+#     lb80_li4_hi0:
+#       fragment-1: "    "
+#       fragment-2: ""
+#     lb80_li4_hi8:
+#       fragment-1: "    "
+#       fragment-2: "        "
