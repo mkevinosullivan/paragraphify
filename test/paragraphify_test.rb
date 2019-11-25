@@ -1,21 +1,23 @@
+# frozen_string_literal: true
+
 require "test_helper"
 require 'yaml'
 require 'byebug'
 
 class ParagraphifyTest < Minitest::Test
   def store_test_data(test:)
-    result_hash = {}
+    hash = {}
 
     # DEBUG puts "######### TEST = "
     # DEBUG p test
 
-    result_hash[:input] = test["input"]
-    result_hash[:lb80_li0_hi0] = test["expected"]["lb80_li0_hi0"].reduce("") { |res, v| res == "" ? res = v[1] : res += "\n" + v[1] }
-    result_hash[:lb80_li4_hi0] = test["expected"]["lb80_li4_hi0"].reduce("") { |res, v| res == "" ? res = v[1] : res += "\n" + v[1] }
-    result_hash[:lb80_li0_hi8] = test["expected"]["lb80_li0_hi8"].reduce("") { |res, v| res == "" ? res = v[1] : res += "\n" + v[1] }
-    result_hash[:lb80_li4_hi8] = test["expected"]["lb80_li4_hi8"].reduce("") { |res, v| res == "" ? res = v[1] : res += "\n" + v[1] }
+    hash[:input] = test["input"]
+    hash[:lb80_li0_hi0] = test["expected"]["lb80_li0_hi0"].reduce("") { |res, v| res == "" ? v[1] : res << "\n" + v[1] }
+    hash[:lb80_li4_hi0] = test["expected"]["lb80_li4_hi0"].reduce("") { |res, v| res == "" ? v[1] : res << "\n" + v[1] }
+    hash[:lb80_li0_hi8] = test["expected"]["lb80_li0_hi8"].reduce("") { |res, v| res == "" ? v[1] : res << "\n" + v[1] }
+    hash[:lb80_li4_hi8] = test["expected"]["lb80_li4_hi8"].reduce("") { |res, v| res == "" ? v[1] : res << "\n" + v[1] }
 
-    result_hash
+    hash
   end
 
   def setup
@@ -35,7 +37,7 @@ class ParagraphifyTest < Minitest::Test
   end
 
   def test_that_it_has_a_version_number
-    refute_nil ::Paragraphify::VERSION
+    refute_nil(::Paragraphify::VERSION)
   end
 
   #
@@ -128,13 +130,13 @@ class ParagraphifyTest < Minitest::Test
   #
   # test paragraphify()
   #
-  def test_paragraphify_returns_a_String
+  def test_paragraphify_returns_a_string
     p = Paragraphify::Paragraph.new
 
-    assert_kind_of String, p.paragraphify(string: "")
+    assert_kind_of(String, p.paragraphify(string: ""))
   end
 
-  def test_paragraphify_returns_a_String_with_leading_indent
+  def test_paragraphify_returns_a_string_with_leading_indent
     p = Paragraphify::Paragraph.new(leading_indent: 4)
 
     input_string = "This is a test string."
@@ -146,7 +148,7 @@ class ParagraphifyTest < Minitest::Test
   # test paragraphify() with defaults - linebreak = 80, leading_indent = 0, hanging_indent = 0
   #
   def test_paragraphify_len50_lb80_li0_hi0
-    p = Paragraphify::Paragraph.new()
+    p = Paragraphify::Paragraph.new
 
     # DEBUG puts "\n", @len50[:input], "\n"
     # DEBUG puts "\n", @len50[:lb80_li0_hi0], "\n"
@@ -155,7 +157,7 @@ class ParagraphifyTest < Minitest::Test
   end
 
   def test_paragraphify_len79_lb80_li0_hi0
-    p = Paragraphify::Paragraph.new()
+    p = Paragraphify::Paragraph.new
 
     # DEBUG puts "\n", @len79[:input], "\n"
     # DEBUG puts "\n", @len79[:lb80_li0_hi0], "\n"
@@ -164,7 +166,7 @@ class ParagraphifyTest < Minitest::Test
   end
 
   def test_paragraphify_len80_ends_with_space_lb80_li0_hi0
-    p = Paragraphify::Paragraph.new()
+    p = Paragraphify::Paragraph.new
 
     # DEBUG puts "\n", @len80_ends_with_space[:input], "\n"
     # DEBUG puts "\n", @len80_ends_with_space[:lb80_li0_hi0], "\n"
@@ -173,7 +175,7 @@ class ParagraphifyTest < Minitest::Test
   end
 
   def test_paragraphify_len100_lb80_li0_hi0
-    p = Paragraphify::Paragraph.new()
+    p = Paragraphify::Paragraph.new
 
     # DEBUG puts "\n", @len100[:input], "\n"
     # DEBUG puts "\n", @len100[:lb80_li0_hi0], "\n"
@@ -182,7 +184,7 @@ class ParagraphifyTest < Minitest::Test
   end
 
   def test_paragraphify_len159_lb80_li0_hi0
-    p = Paragraphify::Paragraph.new()
+    p = Paragraphify::Paragraph.new
 
     # DEBUG puts "\n", @len159[:input], "\n"
     # DEBUG puts "\n", @len159[:lb80_li0_hi0], "\n"
@@ -191,7 +193,7 @@ class ParagraphifyTest < Minitest::Test
   end
 
   def test_paragraphify_len159_ends_with_space_lb80_li0_hi0
-    p = Paragraphify::Paragraph.new()
+    p = Paragraphify::Paragraph.new
 
     # DEBUG puts "\n", @len159_ends_with_space[:input], "\n"
     # DEBUG puts "\n", @len159_ends_with_space[:lb80_li0_hi0], "\n"
@@ -199,17 +201,17 @@ class ParagraphifyTest < Minitest::Test
     assert_equal(@len159_ends_with_space[:lb80_li0_hi0], p.paragraphify(string: @len159_ends_with_space[:input]))
   end
 
-  def test_paragraphify_len159_ends_with_space_lb80_li0_hi0
-    p = Paragraphify::Paragraph.new()
+  def test_paragraphify_len159_strategic_spacing_lb80_li0_hi0
+    p = Paragraphify::Paragraph.new
 
-    # DEBUG puts "\n", @len159_ends_with_space[:input], "\n"
-    # DEBUG puts "\n", @len159_ends_with_space[:lb80_li0_hi0], "\n"
+    # DEBUG puts "\n", @len159_strategic_spacing[:input], "\n"
+    # DEBUG puts "\n", @len159_strategic_spacing[:lb80_li0_hi0], "\n"
 
-    assert_equal(@len159_ends_with_space[:lb80_li0_hi0], p.paragraphify(string: @len159_ends_with_space[:input]))
+    assert_equal(@len159_strategic_spacing[:lb80_li0_hi0], p.paragraphify(string: @len159_strategic_spacing[:input]))
   end
 
   def test_paragraphify_len235_lb80_li0_hi0
-    p = Paragraphify::Paragraph.new()
+    p = Paragraphify::Paragraph.new
 
     # DEBUG puts "\n", @len235[:input], "\n"
     # DEBUG puts "\n", @len235[:lb80_li0_hi0], "\n"
@@ -218,7 +220,7 @@ class ParagraphifyTest < Minitest::Test
   end
 
   def test_paragraphify_len320_lb80_li0_hi0
-    p = Paragraphify::Paragraph.new()
+    p = Paragraphify::Paragraph.new
 
     # DEBUG puts "\n", @len320[:input], "\n"
     # DEBUG puts "\n", @len320[:lb80_li0_hi0], "\n"
@@ -352,8 +354,10 @@ class ParagraphifyTest < Minitest::Test
   def test_paragraphify_len159_ends_with_space_lb80_li0_hi8
     p = Paragraphify::Paragraph.new(hanging_indent: 8)
 
-    # DEBUG puts "\n", @len159_ends_with_space[:input], "\n"
-    # DEBUG puts "\n", @len159_ends_with_space[:lb80_li0_hi8], "\n"
+    # DEBUG
+    puts "#*#*#*#*#*#*#*#*#\n[", @len159_ends_with_space[:input], "]\n"
+    # DEBUG
+    puts "\n[", @len159_ends_with_space[:lb80_li0_hi8], "]\n#*#*#*#*#*#*#*#*#\n"
 
     assert_equal(@len159_ends_with_space[:lb80_li0_hi8], p.paragraphify(string: @len159_ends_with_space[:input]))
   end
@@ -468,5 +472,4 @@ class ParagraphifyTest < Minitest::Test
 
     assert_equal(@len320[:lb80_li4_hi8], p.paragraphify(string: @len320[:input]))
   end
-
 end
