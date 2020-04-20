@@ -355,9 +355,9 @@ class ParagraphifyTest < Minitest::Test
     p = Paragraphify::Paragraph.new(hanging_indent: 8)
 
     # DEBUG
-    puts "#*#*#*#*#*#*#*#*#\n[", @len159_ends_with_space[:input], "]\n"
+    # puts "#*#*#*#*#*#*#*#*#\n[", @len159_ends_with_space[:input], "]\n"
     # DEBUG
-    puts "\n[", @len159_ends_with_space[:lb80_li0_hi8], "]\n#*#*#*#*#*#*#*#*#\n"
+    # puts "\n[", @len159_ends_with_space[:lb80_li0_hi8], "]\n#*#*#*#*#*#*#*#*#\n"
 
     assert_equal(@len159_ends_with_space[:lb80_li0_hi8], p.paragraphify(string: @len159_ends_with_space[:input]))
   end
